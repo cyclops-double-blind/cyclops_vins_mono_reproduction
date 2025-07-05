@@ -1,0 +1,40 @@
+#!/bin/bash
+## Filename: utils.sh
+base_directory=$(realpath $(dirname "$BASH_SOURCE")/..)
+
+function should_rebuild_container() {
+  local current_build_script=$1
+  local dockerfile=$2
+  local buildstamp=$3
+
+  if [[ ! -f "$buildstamp" ]]; then
+    return 0
+  fi
+  if [[ "$dockerfile" -nt "$buildstamp" ]]; then
+    return 0
+  fi
+  if [[ "$current_build_script" -nt "$buildstamp" ]]; then
+    return 0
+  fi
+
+  return 1
+}
+
+function build_container_if_needed() {
+  local current_build_script=$1
+  local container_name=$2
+
+  local dockerfile=$3
+  local buildstamp=$4
+
+  if should_rebuild_container \
+      "$current_build_script" "$dockerfile" "$buildstamp"; then
+    echo "Build container needs to be rebuilt. Starting build..."
+    docker build $base_directory -f $dockerfile --tag $container_name
+
+    mkdir -p $(dirname "$buildstamp")
+    touch "$buildstamp"
+  else
+    echo "Build container is up-to-date. Skipping rebuild."
+  fi
+}
