@@ -1,0 +1,8 @@
+#!/bin/bash
+set -e  # Exit immediately if a command exits with a non-zero status.
+
+base_directory=$(realpath $(dirname "$BASH_SOURCE")/..)
+
+$base_directory/tools/build-deps
+$base_directory/tools/build-catkin
+$base_directory/tools/build-app
