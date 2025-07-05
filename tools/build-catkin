@@ -7,14 +7,14 @@ base_directory=$(realpath $(dirname "${current_script}")/..)
 source $base_directory/tools/utils
 build_container_if_needed $current_script vinsmono-docker-catkin \
   $base_directory/Dockerfile.catkin \
-  $base_directory/build/.container.stamp.catkin
+  $base_directory/.container.stamp.catkin
 
 catkin=${base_directory}/catkin
 package_root=${catkin_root}/src/VINS-Mono
 
 docker run --rm -it \
   -v $catkin:$catkin \
-  -v ${base_directory}/install/ceres:/usr/local \
+  -v ${base_directory}/3rd/install/ceres:/usr/local \
   -w ${catkin} \
   vinsmono-docker-catkin \
   bash -c "\
@@ -23,4 +23,4 @@ docker run --rm -it \
 
     exec gosu builder bash -c ' \
       catkin_make \
-      -DCMAKE_BUILD_TYPE=Release -DCMAKE_EXPORT_COMPILE_COMMANDS=yes'"
+      -DCMAKE_BUILD_TYPE=Release -DCMAKE_EXPORT_COMPILE_COMMANDS=yes install'"

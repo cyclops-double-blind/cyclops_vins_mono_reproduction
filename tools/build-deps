@@ -7,15 +7,15 @@ base_directory=$(realpath $(dirname "${current_script}")/..)
 source $base_directory/tools/utils
 build_container_if_needed $current_script vinsmono-docker-deps \
   $base_directory/Dockerfile.deps \
-  $base_directory/build/.container.stamp.deps
+  $base_directory/.container.stamp.deps
 
-mkdir -p ${base_directory}/build/ceres
-mkdir -p ${base_directory}/install/ceres
+mkdir -p ${base_directory}/3rd/build/ceres
+mkdir -p ${base_directory}/3rd/install/ceres
 
 docker run --rm -it \
   -v $base_directory/3rd/ceres-solver:/ceres-solver \
-  -v $base_directory/build/ceres:/build \
-  -v $base_directory/install/ceres:/usr/local \
+  -v $base_directory/3rd/build/ceres:/build \
+  -v $base_directory/3rd/install/ceres:/usr/local \
   vinsmono-docker-deps \
   bash -c "\
     groupmod -g "$(id -g)" builder

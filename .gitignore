@@ -2,8 +2,8 @@
 !.gitignore
 !.dockerignore
 !.clang-format
-build/*
-install/*
+3rd/build/*
+3rd/install/*
 catkin/build/*
 catkin/devel/*
 catkin/install/*
