@@ -21,7 +21,7 @@ RUN apt-get update -y \
     && rm -rf /var/lib/apt/lists/*
 
 RUN mkdir -p /catkin
-COPY catkin/install/* /catkin/
+COPY catkin/install /catkin/
 
 COPY etc/init.sh /etc/init.sh
 COPY etc/entry.sh /etc/entry.sh
