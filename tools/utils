@@ -1,5 +1,4 @@
 #!/bin/bash
-## Filename: utils.sh
 base_directory=$(realpath $(dirname "$BASH_SOURCE")/..)
 
 function should_rebuild_target() {
@@ -7,8 +6,8 @@ function should_rebuild_target() {
 
   local dockerfile=$2
   local current_build_script=$3
-  local source_directory=$4
 
+  local source_directories=("${@:4}")
   local this_script=$(realpath "$BASH_SOURCE")
 
   if [[ ! -f "$target" ]]; then
@@ -24,13 +23,15 @@ function should_rebuild_target() {
     return 0
   fi
 
-  if [[ -d "$source_directory" ]]; then
-    local updated_files=$(find "$source_directory" -type f -newer "$target")
+  for source_directory in "${source_directories[@]}"; do
+    if [[ -d "$source_directory" ]]; then
+      local updated_files=$(find "$source_directory" -type f -newer "$target")
 
-    if [[ -n "$updated_files" ]]; then
-      return 0
+      if [[ -n "$updated_files" ]]; then
+        return 0
+      fi
     fi
-  fi
+  done
 
   return 1
 }
@@ -42,10 +43,10 @@ function build_container_if_needed() {
   local dockerfile=$3
   local buildstamp=$4
 
-  local watch_directory=$5
+  local source_directories=("${@:5}")
 
   if should_rebuild_target "$buildstamp" \
-      "$dockerfile" "$current_build_script" "$watch_directory"; then
+      "$dockerfile" "$current_build_script" "${source_directories[@]}"; then
     echo "Build container needs to be rebuilt. Starting build..."
     docker build $base_directory -f $dockerfile --tag $container_name
 

@@ -8,4 +8,4 @@ source $base_directory/tools/utils
 build_container_if_needed $current_script vinsmono-docker \
   $base_directory/Dockerfile.app \
   $base_directory/.container.stamp.app \
-  $base_directory/catkin/install
+  $base_directory/catkin/install $base_directory/etc
