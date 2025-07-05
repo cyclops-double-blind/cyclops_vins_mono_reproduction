@@ -17,7 +17,7 @@ ceres_buildstamp="$ceres_cmake_dir/Ceres/CeresTargets-release.cmake"
 if should_rebuild_target "$ceres_buildstamp" \
     "$base_directory/Dockerfile.deps" "$current_script" \
     "$base_directory/3rd/ceres-solver"; then
-  docker run --rm -it \
+  docker run --rm -i \
     -v $base_directory/3rd/ceres-solver:/ceres-solver \
     -v $base_directory/3rd/build/ceres:/build \
     -v $base_directory/3rd/install/ceres:/usr/local \

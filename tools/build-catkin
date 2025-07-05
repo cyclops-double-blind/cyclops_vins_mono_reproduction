@@ -12,7 +12,7 @@ build_container_if_needed $current_script vinsmono-docker-catkin \
 catkin=${base_directory}/catkin
 package_root=${catkin_root}/src/VINS-Mono
 
-docker run --rm -it \
+docker run --rm -i \
   -v $catkin:$catkin \
   -v ${base_directory}/3rd/install/ceres:/usr/local \
   -w ${catkin} \
