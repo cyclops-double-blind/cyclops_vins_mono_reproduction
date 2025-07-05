@@ -22,6 +22,6 @@ RUN apt-get update -y \
 RUN mkdir -p /catkin
 COPY catkin/install/* /catkin/
 
-COPY container/init.sh /entry/init.sh
-COPY container/entry.sh /entry/entry.sh
+COPY etc/init.sh /etc/init.sh
+COPY etc/entry.sh /etc/entry.sh
 ENTRYPOINT ["/entry/entry.sh"]
