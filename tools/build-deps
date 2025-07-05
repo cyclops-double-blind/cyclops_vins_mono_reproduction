@@ -6,24 +6,32 @@ base_directory=$(realpath $(dirname "${current_script}")/..)
 
 source $base_directory/tools/utils
 build_container_if_needed $current_script vinsmono-docker-deps \
-  $base_directory/Dockerfile.deps \
-  $base_directory/.container.stamp.deps
+  $base_directory/Dockerfile.deps $base_directory/.container.stamp.deps
 
 mkdir -p ${base_directory}/3rd/build/ceres
 mkdir -p ${base_directory}/3rd/install/ceres
 
-docker run --rm -it \
-  -v $base_directory/3rd/ceres-solver:/ceres-solver \
-  -v $base_directory/3rd/build/ceres:/build \
-  -v $base_directory/3rd/install/ceres:/usr/local \
-  vinsmono-docker-deps \
-  bash -c "\
-    groupmod -g "$(id -g)" builder
-    usermod -u "$(id -u)" -g "$(id -g)" -o builder
+ceres_cmake_dir="$base_directory/3rd/install/ceres/lib/cmake"
+ceres_buildstamp="$ceres_cmake_dir/Ceres/CeresTargets-release.cmake"
 
-    exec gosu builder bash -c ' \
-      cmake -H/ceres-solver -B/build \
-        -DBUILD_TESTING=OFF -DBUILD_EXAMPLES=OFF -DBUILD_BENCHMARKS=OFF \
-        -DSCHUR_SPECIALIZATIONS=ON \
-        -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/usr/local \
-      && cmake --build /build --target install -- -j8'"
+if should_rebuild_target "$ceres_buildstamp" \
+    "$base_directory/Dockerfile.deps" "$current_script" \
+    "$base_directory/3rd/ceres-solver"; then
+  docker run --rm -it \
+    -v $base_directory/3rd/ceres-solver:/ceres-solver \
+    -v $base_directory/3rd/build/ceres:/build \
+    -v $base_directory/3rd/install/ceres:/usr/local \
+    vinsmono-docker-deps \
+    bash -c "\
+      groupmod -g "$(id -g)" builder
+      usermod -u "$(id -u)" -g "$(id -g)" -o builder
+
+      exec gosu builder bash -c ' \
+        cmake -H/ceres-solver -B/build \
+          -DBUILD_TESTING=OFF -DBUILD_EXAMPLES=OFF -DBUILD_BENCHMARKS=OFF \
+          -DSCHUR_SPECIALIZATIONS=ON \
+          -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/usr/local \
+        && cmake --build /build --target install -- -j8'"
+else
+  echo "$ceres_buildstamp is up to date. Nothing to be done."
+fi
