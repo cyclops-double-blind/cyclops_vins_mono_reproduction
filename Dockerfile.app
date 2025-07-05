@@ -8,6 +8,7 @@ RUN apt-get update -y \
 
 RUN apt-get update -y \
     && apt-get install -y --no-install-recommends \
+        libgoogle-glog0v5 \
         ros-melodic-cv-bridge ros-melodic-tf \
         ros-melodic-message-filters ros-melodic-image-transport \
     && apt-get clean \
