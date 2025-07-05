@@ -24,4 +24,4 @@ COPY catkin/install/* /catkin/
 
 COPY etc/init.sh /etc/init.sh
 COPY etc/entry.sh /etc/entry.sh
-ENTRYPOINT ["/entry/entry.sh"]
+ENTRYPOINT ["/etc/entry.sh"]
