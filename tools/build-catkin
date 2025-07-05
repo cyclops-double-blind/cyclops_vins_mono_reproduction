@@ -1,0 +1,26 @@
+#!/bin/bash
+set -e  # Exit immediately if a command exits with a non-zero status.
+
+current_script=$(realpath "$BASH_SOURCE")
+base_directory=$(realpath $(dirname "${current_script}")/..)
+
+source $base_directory/tools/utils
+build_container_if_needed $current_script vinsmono-docker-catkin \
+  $base_directory/Dockerfile.catkin \
+  $base_directory/build/.container.stamp.catkin
+
+catkin=${base_directory}/catkin
+package_root=${catkin_root}/src/VINS-Mono
+
+docker run --rm -it \
+  -v $catkin:$catkin \
+  -v ${base_directory}/install/ceres:/usr/local \
+  -w ${catkin} \
+  vinsmono-docker-catkin \
+  bash -c "\
+    groupmod -g "$(id -g)" builder
+    usermod -u "$(id -u)" -g "$(id -g)" -o builder
+
+    exec gosu builder bash -c ' \
+      catkin_make \
+      -DCMAKE_BUILD_TYPE=Release -DCMAKE_EXPORT_COMPILE_COMMANDS=yes'"

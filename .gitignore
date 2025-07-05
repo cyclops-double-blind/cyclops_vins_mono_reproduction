@@ -4,3 +4,7 @@
 !.clang-format
 build/*
 install/*
+catkin/build/*
+catkin/devel/*
+catkin/install/*
+catkin/src/CMakeLists.txt
