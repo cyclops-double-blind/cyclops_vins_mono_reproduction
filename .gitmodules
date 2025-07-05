@@ -1,3 +1,6 @@
 [submodule "src/VINS-Mono"]
 	path = src/VINS-Mono
 	url = https://github.com/cyclops-double-blind/VINS-Mono
+[submodule "3rd/ceres-solver"]
+	path = 3rd/ceres-solver
+	url = https://github.com/ceres-solver/ceres-solver
